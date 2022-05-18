@@ -15,6 +15,10 @@ router.get('/', (req, res) => {
  */
 router.post('/cards', async (req, res) => {
   const { cardNum, cardPin } = req.body;
+  console.log('card info, ', cardNum, cardPin);
+  if (!cardNum || !cardPin)
+    return res.status(422).json({ error: 'Please provide card information' });
+
   try {
     const sql = `SELECT * FROM card WHERE card_num = ? AND pin = ?;`;
     const [[result]] = await db.execute(sql, [cardNum, cardPin]);
@@ -51,4 +55,30 @@ router.get('/items', async (req, res) => {
   }
 });
 
+/**
+ *@route   GET ip/vm2/api/items
+ *@desc    get all items in VM2
+ */
+router.patch('/items', async (req, res) => {
+  const { itemId, quantity } = req.body;
+  try {
+    if (!itemId || !quantity) {
+      return res.status(422).json({ error: 'Please provide parameters' });
+    }
+
+    // if there is name parameter in query
+    if (name) {
+      const sql = `SELECT * FROM item WHERE item_name like '%${name}%' ORDER BY price_of_unit ASC;`;
+      const [items] = await db.execute(sql);
+      return res.status(200).json({ items });
+    }
+
+    // if there isn't name parameter in query, find all items
+    const sql = 'SELECT * FROM item;';
+    const [items] = await db.execute(sql);
+    return res.status(200).json({ items });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
 export default router;
