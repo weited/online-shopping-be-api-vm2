@@ -56,8 +56,8 @@ router.get('/items', async (req, res) => {
 });
 
 /**
- *@route   GET ip/vm2/api/items
- *@desc    get all items in VM2
+ *@route   PATCH ip/vm2/api/items
+ *@desc    Update item quantity in VM2
  */
 router.patch('/items', async (req, res) => {
   const { itemId, quantity } = req.body;
